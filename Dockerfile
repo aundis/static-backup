@@ -1,5 +1,5 @@
 # 构建前端
-FROM node:16-alpine as frontend-builder
+FROM node:16-alpine AS frontend-builder
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
@@ -7,7 +7,7 @@ COPY frontend/ .
 RUN npm run build
 
 # 构建后端
-FROM golang:1.18-alpine as backend-builder
+FROM golang:1.18-alpine AS backend-builder
 WORKDIR /app/backend
 COPY backend/go.mod backend/go.sum ./
 RUN go mod download
@@ -25,7 +25,7 @@ COPY --from=frontend-builder /app/frontend/dist ./frontend
 COPY --from=backend-builder /app/backend/backup-system ./
 
 # 复制配置文件目录
-COPY backend/config ./config
+COPY --from=backend-builder /app/backend/config ./config
 
 # 创建备份目录
 RUN mkdir -p backup
