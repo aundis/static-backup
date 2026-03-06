@@ -12,6 +12,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Generate version number
+        id: version
+        run: |
+          VERSION=$(date +"%Y%m%d.%H%M%S")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -26,4 +32,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/backup-system:latest
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/backup-system:latest
+            ${{ secrets.DOCKER_USERNAME }}/backup-system:${{ steps.version.outputs.version }}
