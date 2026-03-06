@@ -14,6 +14,9 @@ RUN go mod download
 COPY backend/ .
 RUN go build -o backup-system .
 
+# 确保 config 目录存在
+RUN mkdir -p config
+
 # 最终镜像
 FROM alpine:latest
 WORKDIR /app
