@@ -21,10 +21,29 @@ func getDirectoriesHandler(c *gin.Context) {
 		// 在Windows上，获取所有驱动器
 		drives, err := getWindowsDrives()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get drives: " + err.Error()})
+			// 如果获取驱动器失败（可能是在非Windows系统上），返回根目录
+			dirs, err := getDirectoryContents("/")
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read directory: " + err.Error()})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{"directories": dirs})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"directories": drives})
+		
+		// 如果获取到了驱动器（Windows系统），返回驱动器列表
+		if len(drives) > 0 {
+			c.JSON(http.StatusOK, gin.H{"directories": drives})
+			return
+		}
+		
+		// 如果没有获取到驱动器，返回根目录
+		dirs, err := getDirectoryContents("/")
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read directory: " + err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"directories": dirs})
 		return
 	}
 
