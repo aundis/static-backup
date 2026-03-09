@@ -1759,7 +1759,8 @@ export default {
           response = await fetch(`/api/schedule/${this.editingScheduleId}`, {
             method: 'PUT',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.token}`
             },
             body: JSON.stringify(this.scheduleForm)
           })
@@ -1768,7 +1769,8 @@ export default {
           response = await fetch('/api/schedule', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.token}`
             },
             body: JSON.stringify(this.scheduleForm)
           })

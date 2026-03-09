@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  backup-system:
+    image: ${DOCKER_USERNAME:-backup-system}/backup-system:latest
+    container_name: backup-system
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backup:/app/backup
+      - ./config:/app/config
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai

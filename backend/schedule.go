@@ -468,6 +468,7 @@ func getSchedulesHandler(c *gin.Context) {
 }
 
 func deleteScheduleHandler(c *gin.Context) {
+	fmt.Println("delete")
 	scheduleID := c.Param("id")
 
 	// 检查计划任务是否存在
@@ -494,6 +495,7 @@ func deleteScheduleHandler(c *gin.Context) {
 			})
 		}
 	}
+	scheduleMutex.Unlock()
 	// 从内存中删除
 	scheduleMutex.Lock()
 	delete(schedules, scheduleID)
