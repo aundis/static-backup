@@ -41,8 +41,13 @@ func main() {
 	// 注册API路由
 	registerRoutes(r)
 
-	// 提供前端静态文件
-	r.Static("/", "./frontend")
+	// 提供前端静态文件（放在最后，避免与API路由冲突）
+	r.NoRoute(func(c *gin.Context) {
+		c.File("frontend/index.html")
+	})
+
+	// 提供静态文件
+	r.Static("/assets", "./frontend/assets")
 
 	// 启动服务器
 	serverAddr := ":8080"
