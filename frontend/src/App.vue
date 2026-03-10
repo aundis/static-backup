@@ -1835,8 +1835,14 @@ h1 {
   border: none;
   cursor: pointer;
   font-size: 16px;
+  color: #666;
   border-bottom: 3px solid transparent;
   transition: all 0.3s;
+}
+
+.tabs button:hover {
+  color: #333;
+  background-color: #f5f5f5;
 }
 
 .tabs button.active {
@@ -1863,18 +1869,29 @@ h1 {
 
 .logout-btn {
   margin-left: auto;
-  background-color: #f44336;
+  background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
   color: white;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 4px;
+  border-radius: 25px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .logout-btn:hover {
-  background-color: #da190b;
+  background: linear-gradient(135deg, #ff4b2b 0%, #ff416c 100%);
+  box-shadow: 0 6px 20px rgba(255, 75, 43, 0.6);
+  transform: translateY(-2px);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(255, 75, 43, 0.4);
 }
 
 .tab-pane {
