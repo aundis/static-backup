@@ -15,7 +15,7 @@ import (
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/gin-gonic/gin"
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 )
 
 type ScheduleRequest struct {
@@ -394,9 +394,12 @@ func loadSchedules() error {
 	for _, schedule := range scheduleList {
 		schedules[schedule.ID] = schedule
 		// 添加到cron
-		cronScheduler.AddFunc(schedule.CronExpr, func() {
+		_, err := cronScheduler.AddFunc(schedule.CronExpr, func() {
 			backupHandlerForSchedule(schedule)
 		})
+		if err != nil {
+			fmt.Printf("Failed to add schedule %s: %v\n", schedule.ID, err)
+		}
 	}
 
 	return nil
@@ -426,7 +429,7 @@ func createScheduleHandler(c *gin.Context) {
 	}
 
 	// 添加到cron
-	err := cronScheduler.AddFunc(req.CronExpr, func() {
+	_, err := cronScheduler.AddFunc(req.CronExpr, func() {
 		// 执行备份
 		backupHandlerForSchedule(schedule)
 	})
@@ -736,7 +739,7 @@ func updateScheduleHandler(c *gin.Context) {
 	for id, schedule := range schedules {
 		if id == scheduleID {
 			// 添加更新后的计划任务
-			err := cronScheduler.AddFunc(updatedSchedule.CronExpr, func() {
+			_, err := cronScheduler.AddFunc(updatedSchedule.CronExpr, func() {
 				backupHandlerForSchedule(updatedSchedule)
 			})
 			if err != nil {
@@ -746,10 +749,13 @@ func updateScheduleHandler(c *gin.Context) {
 			}
 			schedules[id] = updatedSchedule
 		} else {
-			// 添加其他计划任务
-			cronScheduler.AddFunc(schedule.CronExpr, func() {
+			// 重新添加其他计划任务
+			_, err := cronScheduler.AddFunc(schedule.CronExpr, func() {
 				backupHandlerForSchedule(schedule)
 			})
+			if err != nil {
+				fmt.Printf("Failed to add schedule %s: %v\n", schedule.ID, err)
+			}
 		}
 	}
 	scheduleMutex.Unlock()
